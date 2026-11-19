@@ -4,9 +4,9 @@ Minimal Minecraft mod to add and remove any items from your modpack.
 
 ### Remove Items
 
-This mod adds a tag `banned`. Any item with this tag will be removed in the game. To set this tag to items create a datapack with file `data/itemless/tags/item`:
+This mod adds a tag `banned`. Any item with this tag will be removed in the game. To set this tag to items create a datapack with file `data/itemless/tags/item/banned.json`:
 
-```json
+```json5
 {
     "replace": false,
     "values": [
