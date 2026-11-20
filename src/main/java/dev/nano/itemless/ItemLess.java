@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +24,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @Mod(ItemLess.ID)
@@ -59,6 +61,15 @@ public class ItemLess {
             }
 
             menu.broadcastChanges();
+        });
+
+        NeoForge.EVENT_BUS.addListener((PlayerInteractEvent.EntityInteract e) -> {
+            if (e.getLevel().isClientSide || !(e.getTarget() instanceof AbstractVillager v)) {
+                return;
+            }
+
+            v.getOffers().removeIf(o -> ItemLess.banned(o.getResult()) || ItemLess.banned(o.getCostA())
+                    || ItemLess.banned(o.getCostB()));
         });
 
         ItemLess.addItems();
