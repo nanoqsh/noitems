@@ -1,10 +1,10 @@
-## ItemLess
+## NoItems
 
 Minimal Minecraft mod to add and remove any items from your modpack.
 
 ### Remove Items
 
-This mod adds a tag `banned`. Any item with this tag will be removed in the game. To set this tag to items create a datapack with file `data/itemless/tags/item/banned.json`:
+This mod adds a tag `banned`. Any item with this tag will be removed in the game. To set this tag to items create a datapack with file `data/noitems/tags/item/banned.json`:
 
 ```json5
 {
@@ -23,7 +23,7 @@ This mod adds a tag `banned`. Any item with this tag will be removed in the game
 
 ### Add Items
 
-To add items create config file `config/itemless.json` and write json array in it:
+To add items create config file `config/noitems.json` and write json array in it:
 
 ```json5
 [
@@ -35,8 +35,8 @@ To add items create config file `config/itemless.json` and write json array in i
 ]
 ```
 
-It creates the item with id `itemless:cucumber`, you also can find in a separate creative tab.
-To set model and texture for this item create an asset pack with files: `assets/itemless/models/item/cucumber.json` and `assets/itemless/textures/item/cucumber.png`.
+It creates the item with id `noitems:cucumber`, you also can find in a separate creative tab.
+To set model and texture for this item create an asset pack with files: `assets/noitems/models/item/cucumber.json` and `assets/noitems/textures/item/cucumber.png`.
 
 Write a content of `cucumber.json`:
 
@@ -44,7 +44,7 @@ Write a content of `cucumber.json`:
 {
     "parent": "minecraft:item/generated",
     "textures": {
-        "layer0": "itemless:item/cucumber"
+        "layer0": "noitems:item/cucumber"
     }
 }
 ```
@@ -54,10 +54,10 @@ To pack this assets create `pack.mcmeta` file with content:
 ```json5
 {
     "pack": {
-        "description": "ItemLess",
+        "description": "NoItems",
         "pack_format": 34
     }
 }
 ```
 
-And pack it by command `zip -r itemless.zip assets pack.mcmeta`. After, you can apply this assetpack and you'll see your item sprites at the game!
+And pack it by command `zip -r noitems.zip assets pack.mcmeta`. After, you can apply this assetpack and you'll see your item sprites at the game!

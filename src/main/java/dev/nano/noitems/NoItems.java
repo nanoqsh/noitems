@@ -1,4 +1,4 @@
-package dev.nano.itemless;
+package dev.nano.noitems;
 
 import java.nio.file.Files;
 
@@ -27,14 +27,14 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@Mod(ItemLess.ID)
-public class ItemLess {
-    static final String ID = "itemless";
+@Mod(NoItems.ID)
+public class NoItems {
+    static final String ID = "noitems";
     static final Logger LOGGER = LogUtils.getLogger();
 
-    public ItemLess(IEventBus bus) {
+    public NoItems(IEventBus bus) {
         NeoForge.EVENT_BUS.addListener((EntityJoinLevelEvent e) -> {
-            if (e.getEntity() instanceof ItemEntity ie && ItemLess.banned(ie.getItem())) {
+            if (e.getEntity() instanceof ItemEntity ie && NoItems.banned(ie.getItem())) {
                 e.setCanceled(true);
             }
         });
@@ -42,7 +42,7 @@ public class ItemLess {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent e) -> {
             var inv = e.getEntity().getInventory();
             for (var i = 0; i < inv.getContainerSize(); i++) {
-                if (ItemLess.banned(inv.getItem(i))) {
+                if (NoItems.banned(inv.getItem(i))) {
                     inv.setItem(i, ItemStack.EMPTY);
                 }
             }
@@ -55,7 +55,7 @@ public class ItemLess {
 
             var menu = e.getContainer();
             for (var s : menu.slots) {
-                if (ItemLess.banned(s.getItem())) {
+                if (NoItems.banned(s.getItem())) {
                     s.set(ItemStack.EMPTY);
                 }
             }
@@ -68,40 +68,40 @@ public class ItemLess {
                 return;
             }
 
-            v.getOffers().removeIf(o -> ItemLess.banned(o.getResult()) || ItemLess.banned(o.getCostA())
-                    || ItemLess.banned(o.getCostB()));
+            v.getOffers().removeIf(o -> NoItems.banned(o.getResult()) || NoItems.banned(o.getCostA())
+                    || NoItems.banned(o.getCostB()));
         });
 
-        ItemLess.addItems();
-        ItemLess.ITEMS.register(bus);
-        ItemLess.TABS.register(bus);
+        NoItems.addItems();
+        NoItems.ITEMS.register(bus);
+        NoItems.TABS.register(bus);
     }
 
     static final TagKey<Item> BANNED = TagKey
-            .create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(ItemLess.ID, "banned"));
+            .create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NoItems.ID, "banned"));
 
-    static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ItemLess.ID);
+    static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(NoItems.ID);
 
     static void info(String s) {
-        var evar = System.getenv("ITEMLESS_DEBUG");
+        var evar = System.getenv("NOITEMS_DEBUG");
         var debug = evar != null && !evar.isBlank() && !evar.equals("0");
 
         if (debug) {
-            ItemLess.LOGGER.info("[" + ItemLess.ID + "] " + s);
+            NoItems.LOGGER.info("[" + NoItems.ID + "] " + s);
         }
     }
 
     static boolean banned(ItemStack s) {
-        var banned = s.is(ItemLess.BANNED);
+        var banned = s.is(NoItems.BANNED);
         if (banned) {
-            ItemLess.info("Banned item: " + s.getItem());
+            NoItems.info("Banned item: " + s.getItem());
         }
 
         return banned;
     }
 
     static void addItems() {
-        var path = FMLPaths.CONFIGDIR.get().resolve("itemless.json");
+        var path = FMLPaths.CONFIGDIR.get().resolve("noitems.json");
         try {
             if (!Files.exists(path)) {
                 return;
@@ -122,21 +122,21 @@ public class ItemLess {
                 }
 
                 var props = new Item.Properties().stacksTo(stack);
-                ItemLess.ITEMS.registerSimpleItem(id, props);
+                NoItems.ITEMS.registerSimpleItem(id, props);
             }
         } catch (Exception e) {
-            ItemLess.LOGGER.error("[" + ItemLess.ID + "] failed to read itemless.json: " + e);
+            NoItems.LOGGER.error("[" + NoItems.ID + "] failed to read 'noitems.json' file: " + e);
         }
     }
 
     static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister
-            .create(Registries.CREATIVE_MODE_TAB, ItemLess.ID);
+            .create(Registries.CREATIVE_MODE_TAB, NoItems.ID);
 
     static {
-        ItemLess.TABS.register("tab", () -> CreativeModeTab.builder()
-                .title(Component.literal(ItemLess.class.getSimpleName()))
+        NoItems.TABS.register("tab", () -> CreativeModeTab.builder()
+                .title(Component.literal(NoItems.class.getSimpleName()))
                 .icon(() -> new ItemStack(Items.PAPER))
-                .displayItems((p, out) -> ItemLess.ITEMS.getEntries().forEach(item -> out.accept(item.get())))
+                .displayItems((p, out) -> NoItems.ITEMS.getEntries().forEach(item -> out.accept(item.get())))
                 .build());
     }
 }
