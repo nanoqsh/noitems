@@ -23,4 +23,41 @@ This mod adds a tag `banned`. Any item with this tag will be removed in the game
 
 ### Add Items
 
-// todo
+To add items create config file `config/itemless.json` and write json array in it:
+
+```json5
+[
+    "cucumber", // create an item with default stack size = 1
+    {
+        "id": "cucumber", // or, set item id
+        "stack": 64 // and specify this field to set stack size
+    }
+]
+```
+
+It creates the item with id `itemless:cucumber`, you also can find in a separate creative tab.
+To set model and texture for this item create an asset pack with files: `assets/itemless/models/item/cucumber.json` and `assets/itemless/textures/item/cucumber.png`.
+
+Write a content of `cucumber.json`:
+
+```json5
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "itemless:item/cucumber"
+    }
+}
+```
+
+To pack this assets create `pack.mcmeta` file with content:
+
+```json5
+{
+    "pack": {
+        "description": "ItemLess",
+        "pack_format": 34
+    }
+}
+```
+
+And pack it by command `zip -r itemless.zip assets pack.mcmeta`. After, you can apply this assetpack and you'll see your item sprites at the game!

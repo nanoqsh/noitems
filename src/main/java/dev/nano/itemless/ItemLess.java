@@ -97,21 +97,21 @@ public class ItemLess {
             }
 
             for (var el : JsonParser.parseString(Files.readString(path)).getAsJsonArray()) {
-                String name;
+                String id;
                 int stack;
                 if (el.isJsonPrimitive() && el.getAsJsonPrimitive().isString()) {
-                    name = el.getAsString();
+                    id = el.getAsString();
                     stack = 1;
                 } else if (el.isJsonObject()) {
                     var o = el.getAsJsonObject();
-                    name = o.get("id").getAsString();
+                    id = o.get("id").getAsString();
                     stack = o.has("stack") ? o.get("stack").getAsInt() : 1;
                 } else {
                     throw new Exception("invalid item properties, expected a string or an object");
                 }
 
                 var props = new Item.Properties().stacksTo(stack);
-                ItemLess.ITEMS.registerSimpleItem(name, props);
+                ItemLess.ITEMS.registerSimpleItem(id, props);
             }
         } catch (Exception e) {
             ItemLess.LOGGER.error("[" + ItemLess.ID + "] failed to read itemless.json: " + e);
