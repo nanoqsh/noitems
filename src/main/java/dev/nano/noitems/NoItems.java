@@ -1,6 +1,8 @@
 package dev.nano.noitems;
 
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 
@@ -10,6 +12,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -21,10 +24,13 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @Mod(NoItems.ID)
@@ -70,6 +76,33 @@ public class NoItems {
 
             v.getOffers().removeIf(o -> NoItems.banned(o.getResult()) || NoItems.banned(o.getCostA())
                     || NoItems.banned(o.getCostB()));
+        });
+
+        Consumer<MinecraftServer> removeRecipes = s -> {
+            var manager = s.getRecipeManager();
+            var reg = s.registryAccess();
+            var recipes = manager
+                    .getRecipes()
+                    .stream()
+                    .filter(h -> !NoItems.banned(h.value().getResultItem(reg)))
+                    .toList();
+
+            manager.replaceRecipes(recipes);
+        };
+
+        NeoForge.EVENT_BUS.addListener((ServerStartedEvent e) -> removeRecipes.accept(e.getServer()));
+        NeoForge.EVENT_BUS.addListener((OnDatapackSyncEvent e) -> removeRecipes.accept(e.getPlayerList().getServer()));
+
+        bus.addListener((BuildCreativeModeTabContentsEvent e) -> {
+            new ArrayList<>(e.getParentEntries())
+                    .stream()
+                    .filter(NoItems::banned)
+                    .forEach(s -> e.remove(s, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY));
+
+            new ArrayList<>(e.getSearchEntries())
+                    .stream()
+                    .filter(NoItems::banned)
+                    .forEach(s -> e.remove(s, CreativeModeTab.TabVisibility.SEARCH_TAB_ONLY));
         });
 
         NoItems.addItems();
