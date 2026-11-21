@@ -36,7 +36,7 @@ To add items create config file `config/noitems.json` and write json array in it
 ```
 
 It creates the item with id `noitems:cucumber`, you also can find in a separate creative tab.
-To set model and texture for this item create an asset pack with files: `assets/noitems/models/item/cucumber.json` and `assets/noitems/textures/item/cucumber.png`.
+To set model and texture for this item create an asset pack with files: `assets/noitems/models/item/cucumber.json`, `assets/noitems/textures/item/cucumber.png` and `assets/noitems/lang/en_us.json`.
 
 Write a content of `cucumber.json`:
 
@@ -46,6 +46,14 @@ Write a content of `cucumber.json`:
     "textures": {
         "layer0": "noitems:item/cucumber"
     }
+}
+```
+
+And name the item in `en_us.json` file with:
+
+```json5
+{
+    "item.noitems.cucumber": "Cucumber"
 }
 ```
 
